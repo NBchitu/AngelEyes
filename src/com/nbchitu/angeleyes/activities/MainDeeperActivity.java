@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.text.SpannableStringBuilder;
+import android.text.format.Time;
 import android.text.style.RelativeSizeSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.os.Handler;
 
@@ -25,23 +27,22 @@ public class MainDeeperActivity
 	private static final DecimalFormat  L = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
 //private static final String ab = LogEditFragment.class.getName();
 //private static final String ac = LogShareFragment.class.getName();
-@Deprecated
-public static int n = 0;
+@Deprecated	// 这个类或方法不再建议使用
+	public static int n = 0;
 
-
-	private TextView A;
-	private ImageView B;
+	private TextView A;		// deeper_searching:"Searching…"
+	private ImageView B;	// btn_reconnect
 	private ImageView C;	// ic
 	private ImageView J;	// ic_sleep
-	private View K;
+	private View K;			// btn_working(ProgressBar)
 	//private SceneView M;	//	import com.telesoftas.deeper.animation.SceneView;
 	//private SceneView M;
 	//private HistorySceneView N;	// import com.telesoftas.deeper.animation.HistorySceneView;
-	private View O;
-	private TextView P;
-	private TextView Q;
-	private TextView R;
-	private TextView S;
+	private View O;			// history_panel_handle(ImageView)
+	private TextView P;		// temperature(TextView)
+	private TextView Q;		// depth
+	private TextView R;		// ice_temperature
+	private TextView S;		// ice_depth
 	private boolean T = false;
 	private boolean U = false;
 	private boolean V = false;
@@ -58,7 +59,7 @@ public static int n = 0;
 	//private QuickSettingsFragment aF;	//import com.telesoftas.deeper.ui.fragments.QuickSettingsFragment;
 	private int aG = -1;
 	//private LogShareFragment aa;	//import com.telesoftas.deeper.ui.fragments.LogShareFragment;
-	private SharedPreferences ad;
+	private SharedPreferences ad;	// 保存"prefs"参数，用来存储轻量级数据
 	private boolean ae = false;
 	private boolean af = false;
 	private boolean ag = false;
@@ -74,8 +75,8 @@ public static int n = 0;
 	private int ap = -1;
 	private long aq;
 	private boolean ar;
-	private String as = "";
-	private String at = "";
+	private String as = "";	// depth uint
+	private String at = "";	// temperature unit
 	private final RelativeSizeSpan au = new RelativeSizeSpan(0.7F);
 	private final RelativeSizeSpan av = new RelativeSizeSpan(0.6F);
 	private final SpannableStringBuilder aw = new SpannableStringBuilder();
@@ -95,70 +96,77 @@ public static int n = 0;
 	//private Panel y;
 	//private Panel z;
 
-private void A()
-{
-  this.aD = null;
-  Intent localIntent = new Intent("android.media.action.IMAGE_CAPTURE");
-  if (localIntent.resolveActivity(getPackageManager()) != null)
-  {
-    Time localTime = new Time();
-    localTime.setToNow();
-    this.aD = new File(getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), localTime.format("%Y%m%d%H%M%S") + ".jpg");
-    if (this.aD != null)
-    {
-      localIntent.addFlags(524288);	// 0x80000
-      localIntent.putExtra("output", Uri.fromFile(this.aD));
-      if (this.H) {
-        a(2131296369, true, new GregorianCalendar(), null);	// log_edit_popup
-      }
-      startActivityForResult(localIntent, 15);
-    }
-  }
-  if (this.aD == null) {
-    Toast.makeText(this, 2131427542, 1).show();	// no_camera
-  }
-}
+// function: 拍照相关
+//private void A()	 
+//{
+//  this.aD = null;
+//  Intent localIntent = new Intent("android.media.action.IMAGE_CAPTURE");
+//  if (localIntent.resolveActivity(getPackageManager()) != null)
+//  {
+//    Time localTime = new Time();
+//    localTime.setToNow();
+//    this.aD = new File(getApplicationContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), localTime.format("%Y%m%d%H%M%S") + ".jpg");
+//    if (this.aD != null)
+//    {
+//      localIntent.addFlags(524288);	// 0x80000
+//      localIntent.putExtra("output", Uri.fromFile(this.aD));
+//      if (this.H) {
+//        a(2131296369, true, new GregorianCalendar(), null);	// log_edit_popup
+//      }
+//      startActivityForResult(localIntent, 15);
+//    }
+//  }
+//  if (this.aD == null) {
+//    Toast.makeText(this, 2131427542, 1).show();	// no_camera
+//  }
+//}
 
-private void B()
-{
-  startActivity(new Intent(this, WeatherActivity.class));
-}
+// 利用intent启动activity: WeatherActivity
+//private void B()
+//{
+//  startActivity(new Intent(this, WeatherActivity.class));
+//}
 
-private void C()
-{
-  startActivity(new Intent(this, LogActivity.class));
-}
+// 利用intent启动activity: LogActivity
+//private void C()
+//{
+//  startActivity(new Intent(this, LogActivity.class));
+//}
 
-private void D()
-{
-  startActivity(new Intent(this, DeeperMapActivity.class));
-}
+//利用intent启动activity: DeeperMapActivity
+//private void D()
+//{
+//  startActivity(new Intent(this, DeeperMapActivity.class));
+//}
 
-private void E()
-{
-  if (this.H)
-  {
-    if (b(2131296370, true)) {	// log_share_popup
-      I();
-    }
-    return;
-  }
-  startActivity(new Intent(this, SharingActivity.class));
-}
+// 打开分享界面
+//private void E()
+//{
+//  if (this.H)
+//  {
+//    if (b(2131296370, true)) {	// log_share_popup
+//      I();
+//    }
+//    return;
+//  }
+//  startActivity(new Intent(this, SharingActivity.class));
+//}
 
-private void F()
-{
-  CommunicationProtocol.ConnectionInfo localConnectionInfo = this.al.c();
-  if (localConnectionInfo.a == CommunicationProtocol.ConnectionState.f) {}
-  for (DeeperModel localDeeperModel = localConnectionInfo.b;; localDeeperModel = null)
-  {
-    startActivity(SettingsActivity.a(this, localDeeperModel));
-    return;
-  }
-}
+// 打开设置界面,但是打开之前向startActivity传入一些当前工作状态参数,比较复杂
+//private void F()
+//{
+//  
+//	CommunicationProtocol.ConnectionInfo localConnectionInfo = this.al.c();//import com.fridaylab.deeper.communication.CommunicationProtocol;
+//  if (localConnectionInfo.a == CommunicationProtocol.ConnectionState.f) {}
+//  for (DeeperModel localDeeperModel = localConnectionInfo.b;; localDeeperModel = null)
+//  {
+//    startActivity(SettingsActivity.a(this, localDeeperModel));	// 打开设置界面
+//    return;
+//  }
+//}
 
 private void G()
-{
+{ 
   int i = ViewTools.b(this);
   int j = ViewTools.a(this);
   int k = Math.max((int)(i / 2.1D), DisplayUtils.a(this, 292));
@@ -563,7 +571,7 @@ public static IntentFilter j()
 
 private void n()
 {
-  this.M = ((SceneView)findViewById(2131296408));	// container
+	this.M = ((SceneView)findViewById(2131296408));	// container
   this.N = ((HistorySceneView)findViewById(2131296439));	// history_view
   this.N.setHistorySeekBar((SeekBar)findViewById(2131296440));	// history_seekbar
   this.M.setHistoryPanel(this.y);
@@ -592,7 +600,7 @@ private void o()
   int k = ViewTools.a(ViewTools.a(0.8F * (j - i)) / 9.0F);
   this.R.setTextSize(0, k);
   this.S.setTextSize(0, k);
-}
+} 
 
 private void p()
 {
@@ -1840,7 +1848,7 @@ public void onClick(View paramView)
   for (String str1 = "off";; str1 = "on")
   {
     m().a(MapBuilder.a("Sonar", "change_sleep", str1, null).a());
-    if (paramView == this.B)
+    if (paramView == this.B)	// 蓝牙重连图标点击
     {
       u();
       this.I.d().a();
@@ -1890,26 +1898,30 @@ public void onConfigurationChanged(Configuration paramConfiguration)
   this.M.b();
   this.N.b();
 }
-
-public void onCreate(Bundle paramBundle)
+// 创建主界面
+public void onCreate(Bundle paramBundle)	// Bundle为key-value对
 {
   super.onCreate(paramBundle);
-  LocalBroadcastManager.a(this).a(this.az, CommunicationService.a());
+  // LocalBroadcastManager用来在同一个应用内的不同组件间发送Broadcast
+  // 注册广播接收者
+  LocalBroadcastManager.getInstance(this).registerReceiver(this.az, CommunicationService.a());
+  // 启动deeper通信服务
   startService(new Intent(this, CommunicationService.class));
-  this.ad = getSharedPreferences("prefs", 0);
-  this.ad.edit().putFloat(SettingsUtils.e, 0.0F).apply();
-  setContentView(2130903069);	// main_deeper_activity
-  findViewById(2131296418).setOnClickListener(this);	// menu_calendar
+  
+  this.ad = getSharedPreferences("prefs", 0);	// 获取prefs参数
+  this.ad.edit().putFloat(SettingsUtils.e, 0.0F).apply();	// 存入单位 float类型的首选项,优选apply()异步保存
+  setContentView(2130903069);	// 显示界面: main_deeper_activity
+  findViewById(2131296418).setOnClickListener(this);	// menu_calendar(TextView)单击事件加入到本activity的onclick中
   findViewById(2131296419).setOnClickListener(this);	// menu_camera
   findViewById(2131296420).setOnClickListener(this);	// menu_weather
   findViewById(2131296421).setOnClickListener(this);	// menu_notes
   findViewById(2131296422).setOnClickListener(this);	// menu_maps
   findViewById(2131296423).setOnClickListener(this);	// menu_sharing
   findViewById(2131296424).setOnClickListener(this);	// menu_settings
-  this.z = ((Panel)findViewById(2131296442));	// options_panel
-  this.x = ((Panel)findViewById(2131296415));	// menuPanel
-  this.y = ((Panel)findViewById(2131296436));	// history_panel
-  this.O = findViewById(2131296441);	// history_panel_handle
+  this.z = ((Panel)findViewById(2131296442));	// options_panel 抽屉panel,操作设置
+  this.y = ((Panel)findViewById(2131296436));	// history_panel 历史探测界面回顾
+  this.x = ((Panel)findViewById(2131296415));	// menuPanel 
+  this.O = findViewById(2131296441);	// history_panel_handle 
   this.P = ((TextView)findViewById(2131296405));	// temperature
   this.Q = ((TextView)findViewById(2131296430));	// depth
   this.R = ((TextView)findViewById(2131296413));	// ice_temperature
